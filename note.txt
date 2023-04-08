@@ -1,0 +1,54 @@
+// Update with your config settings.
+
+/**
+ * @type { Object.<string, import("knex").Knex.Config> }
+ */
+const sharedConfig = {
+  migration: {
+    directory: "./data/migrations",
+  },
+  seeds: {
+    directory: "./data/seeds",
+  },
+  useNullAsDefault: true,
+  pool: {
+    alterCreate: (conn, done) => {
+      conn.run("PRAGMA foreing_keys=ON", done);
+    },
+  },
+};
+module.exports = {
+  development: {
+    ...sharedConfig,
+    client: "sqlite3",
+    connection: {
+      filename: "./data/todo-app.db3",
+    },
+  },
+  testing: {
+    ...sharedConfig,
+    client: "sqlite3",
+    connection: {
+      filename: "./data/todo-app-testing.db3",
+    },
+  },
+   production: { //.env de "production" yaz vercel için
+    client: "mysql",
+    connection: {
+      database: "my_db",
+      user: "username",
+      password: "password",
+      server: "serverAddress",
+    },
+    pool: {
+      min: 2,
+      max: 10,
+    },
+    migrations: {
+      tableName: "knex_migrations",
+    },
+  },
+};
+
+
+
